@@ -1,0 +1,58 @@
+W1028 00:17:41.459000 4260 site-packages\torch\distributed\elastic\multiprocessing\redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+Loading local RF-DETR Nano model...
+[2026-10-28 00:17:42] [INFO] rf-detr - File C:\Users\PALLAVI\.roboflow\models\rf-detr-nano.pth already exists with correct MD5 hash.
+[2026-10-28 00:17:42] [WARNING] rf-detr - Using a different number of positional encodings than DINOv2, which means we're not loading DINOv2 backbone weights. This is not a problem if finetuning a pretrained RF-DETR model.
+[2026-10-28 00:17:42] [WARNING] rf-detr - Using patch size 16 instead of 14, which means we're not loading DINOv2 backbone weights. This is not a problem if finetuning a pretrained RF-DETR model.
+[2026-10-28 00:17:44] [INFO] rf-detr - File C:\Users\PALLAVI\.roboflow\models\rf-detr-nano.pth already exists with correct MD5 hash.
+[2026-10-28 00:17:46] [WARNING] rf-detr - Model is not optimized for inference. Latency may be higher than expected. For full GPU throughput (e.g. ~8x on T4 via FP16 Tensor Cores), call model.inference(dtype=torch.float16).
+Frame 5/240 | Vehicles: 3 | Density: LOW | Classes: {'car': 3}
+Frame 10/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 4}
+Frame 15/240 | Vehicles: 2 | Density: LOW | Classes: {'car': 2}
+Frame 20/240 | Vehicles: 2 | Density: LOW | Classes: {'car': 2}
+Frame 25/240 | Vehicles: 3 | Density: LOW | Classes: {'car': 3}
+Frame 30/240 | Vehicles: 2 | Density: LOW | Classes: {'car': 2}
+Frame 35/240 | Vehicles: 2 | Density: LOW | Classes: {'car': 2}
+Frame 40/240 | Vehicles: 2 | Density: LOW | Classes: {'car': 2}
+Frame 45/240 | Vehicles: 2 | Density: LOW | Classes: {'car': 2}
+Frame 50/240 | Vehicles: 1 | Density: LOW | Classes: {'car': 1}
+Frame 55/240 | Vehicles: 2 | Density: LOW | Classes: {'car': 2}
+Frame 60/240 | Vehicles: 2 | Density: LOW | Classes: {'car': 2}
+Frame 65/240 | Vehicles: 2 | Density: LOW | Classes: {'car': 2}
+Frame 70/240 | Vehicles: 1 | Density: LOW | Classes: {'car': 1}
+Frame 75/240 | Vehicles: 5 | Density: LOW | Classes: {'car': 4, 'truck': 1}
+Frame 80/240 | Vehicles: 5 | Density: LOW | Classes: {'car': 4, 'truck': 1}
+Frame 85/240 | Vehicles: 5 | Density: LOW | Classes: {'car': 4, 'truck': 1}
+Frame 90/240 | Vehicles: 5 | Density: LOW | Classes: {'car': 4, 'truck': 1}
+Frame 95/240 | Vehicles: 5 | Density: LOW | Classes: {'car': 4, 'truck': 1}
+Frame 100/240 | Vehicles: 5 | Density: LOW | Classes: {'car': 4, 'truck': 1}
+Frame 105/240 | Vehicles: 5 | Density: LOW | Classes: {'car': 4, 'truck': 1}
+Frame 110/240 | Vehicles: 6 | Density: MEDIUM | Classes: {'car': 4, 'truck': 2}
+Frame 115/240 | Vehicles: 5 | Density: LOW | Classes: {'car': 4, 'truck': 1}
+Frame 120/240 | Vehicles: 6 | Density: MEDIUM | Classes: {'car': 5, 'truck': 1}
+Frame 125/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 4}
+Frame 130/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 3, 'truck': 1}
+Frame 135/240 | Vehicles: 5 | Density: LOW | Classes: {'car': 4, 'truck': 1}
+Frame 140/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 4}
+Frame 145/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 4}
+Frame 150/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 4}
+Frame 155/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 4}
+Frame 160/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 4}
+Frame 165/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 4}
+Frame 170/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 4}
+Frame 175/240 | Vehicles: 5 | Density: LOW | Classes: {'car': 4, 'truck': 1}
+Frame 180/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 3, 'motorcycle': 1}
+Frame 185/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 4}
+Frame 190/240 | Vehicles: 5 | Density: LOW | Classes: {'car': 4, 'truck': 1}
+Frame 195/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 2, 'truck': 1, 'motorcycle': 1}
+Frame 200/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 3, 'truck': 1}
+Frame 205/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 3, 'truck': 1}
+Frame 210/240 | Vehicles: 4 | Density: LOW | Classes: {'car': 3, 'truck': 1}
+Frame 215/240 | Vehicles: 3 | Density: LOW | Classes: {'car': 2, 'truck': 1}
+Frame 220/240 | Vehicles: 3 | Density: LOW | Classes: {'car': 2, 'truck': 1}
+Frame 225/240 | Vehicles: 2 | Density: LOW | Classes: {'car': 2}
+Frame 230/240 | Vehicles: 2 | Density: LOW | Classes: {'car': 2}
+Frame 235/240 | Vehicles: 2 | Density: LOW | Classes: {'car': 2}
+Frame 240/240 | Vehicles: 2 | Density: LOW | Classes: {'car': 2}
+Vehicle counting completed.
+Sampled frames: 48
+Annotated video: C:\Users\PALLAVI\OneDrive\Desktop\smart-traffic-system\results\vehicle_count_output.mp4

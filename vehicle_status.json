@@ -1,0 +1,9 @@
+{
+  "running": false,
+  "vehicle_count": 2,
+  "traffic_density": "LOW",
+  "last_frame": 240,
+  "processed_frames": 48,
+  "message": "Vehicle counting completed",
+  "output_video": "C:\\Users\\PALLAVI\\OneDrive\\Desktop\\smart-traffic-system\\results\\vehicle_count_output.mp4"
+}

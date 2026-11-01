@@ -1,0 +1,618 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Traffic Safety Dashboard</title>
+
+    <style>
+        :root {
+            font-family: Arial, sans-serif;
+            color: #172033;
+            background: #f1f5f9;
+        }
+
+        * { box-sizing: border-box; }
+
+        body { margin: 0; }
+
+        header {
+            background: #14213d;
+            color: white;
+            padding: 24px;
+        }
+
+        header h1 { margin: 0 0 8px; }
+
+        header p {
+            margin: 0;
+            color: #dbeafe;
+        }
+
+        main {
+            max-width: 1300px;
+            margin: 24px auto;
+            padding: 0 16px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+            gap: 14px;
+        }
+
+        .card, .panel {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000d;
+            margin-bottom: 18px;
+        }
+
+        .card h3 {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .value {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        button {
+            border: 0;
+            border-radius: 7px;
+            padding: 11px 16px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            margin: 4px 4px 4px 0;
+            font-size: 14px;
+        }
+
+        button:hover { background: #1d4ed8; }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .danger { background: #dc2626; }
+
+        .danger:hover { background: #b91c1c; }
+
+        .status {
+            padding: 12px;
+            border-radius: 7px;
+            background: #eff6ff;
+            color: #1e40af;
+            margin-top: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .note {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .table-wrap { overflow-x: auto; }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 1200px;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+            font-size: 13px;
+            vertical-align: top;
+        }
+
+        th { background: #f8fafc; }
+
+        tbody tr:nth-child(even) { background: #f8fafc; }
+
+        input {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+        }
+
+        pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 14px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            max-height: 320px;
+            overflow: auto;
+        }
+
+        footer {
+            text-align: center;
+            color: #64748b;
+            padding: 20px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Smart Traffic Safety System</h1>
+    <p>Traffic Management, Accident Detection and Ambulance Priority</p>
+</header>
+
+<main>
+
+    <section class="cards">
+
+        <div class="card">
+            <h3>Traffic Density</h3>
+            <div class="value" id="density">
+                {{ state.traffic_density|default('UNKNOWN') }}
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Detected Vehicles</h3>
+            <div class="value" id="vehicles">
+                {{ state.vehicle_count|default(0) }}
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Signal Phase</h3>
+            <div class="value" id="signal">
+                {{ state.signal_phase|default('NORMAL') }}
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Green Time</h3>
+            <div class="value">
+                <span id="greenTime">
+                    {{ state.green_seconds|default(10) }}
+                </span>
+                seconds
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Ambulance Status</h3>
+            <div class="value" id="ambulance">
+                {{ state.ambulance_status|default('Available (simulated)') }}
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Ambulance ETA</h3>
+            <div class="value" id="ambulanceEta">N/A</div>
+        </div>
+
+        <div class="card">
+            <h3>Ambulance Traffic</h3>
+            <div class="value" id="ambulanceTraffic">N/A</div>
+        </div>
+
+        <div class="card">
+            <h3>Total Saved Events</h3>
+            <div class="value" id="eventCount">
+                {{ total_alerts|default(0) }}
+            </div>
+        </div>
+
+    </section>
+
+    <section class="panel">
+        <h2>Accident and Emergency Response</h2>
+
+        <p>
+            Create a test incident to check the simulated response
+            and save an event.
+        </p>
+
+        <form id="simulateForm" action="/simulate-alert" method="post">
+            <label for="incidentDetails">
+                Test incident description (optional)
+            </label>
+            <br>
+
+            <input
+                id="incidentDetails"
+                name="details"
+                maxlength="250"
+                placeholder="Possible accident - verify"
+                style="max-width:420px;width:100%;margin:8px 0"
+            >
+
+            <br>
+
+            <button class="danger" id="simulateButton" type="submit">
+                Simulate Accident Alert
+            </button>
+        </form>
+
+        <p class="note">
+            Academic simulation only. Coordinates are examples.
+            No real ambulance is contacted.
+        </p>
+
+        <div class="status">
+            Current incident:
+            <strong id="incident">
+                {{ state.incident_status|default('No incident reported') }}
+            </strong>
+        </div>
+
+        <div id="tableStatus" class="status" role="status">
+            Connecting to dashboard API...
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Video Accident Detection</h2>
+
+        <p>
+            Run the configured script:
+            <code>src/accident_response.py</code>
+        </p>
+
+        <button id="startDetection" type="button">
+            Run Accident Detection
+        </button>
+
+        <div id="detectionStatus" class="status" role="status">
+            Detection has not started.
+        </div>
+
+        <h3>Detection Logs</h3>
+
+        <pre id="detectionOutput">{% for line in detection_output|default([]) %}{{ line }}
+{% else %}No detection output yet.
+{% endfor %}</pre>
+    </section>
+
+    <section class="panel">
+        <h2>Event History — SQLite</h2>
+
+        <p class="note">
+            Saved events are loaded from your existing local SQLite database.
+        </p>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Event Type</th>
+                        <th>Status</th>
+                        <th>Density</th>
+                        <th>Vehicles</th>
+                        <th>Signal</th>
+                        <th>Ambulance</th>
+                        <th>Distance</th>
+                        <th>Ambulance Traffic</th>
+                        <th>ETA (minutes)</th>
+                        <th>Dispatch</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+
+                <tbody id="eventRows">
+                    {% for alert in alerts|default([]) %}
+                    <tr>
+                        <td>{{ alert.time|default('') }}</td>
+                        <td>{{ alert.event_type|default('Incident') }}</td>
+                        <td>{{ alert.status|default('Unknown') }}</td>
+                        <td>{{ alert.traffic_density|default('LOW') }}</td>
+                        <td>{{ alert.vehicle_count|default(0) }}</td>
+                        <td>{{ alert.signal_phase|default('NORMAL') }}</td>
+                        <td>{{ alert.ambulance|default('N/A') }}</td>
+
+                        <td>
+                            {% if alert.distance_km is defined and alert.distance_km is not none %}
+                                {{ "%.2f"|format(alert.distance_km|float) }} km
+                            {% else %}
+                                {{ alert.distance|default('N/A') }}
+                            {% endif %}
+                        </td>
+
+                        <td>{{ alert.ambulance_traffic|default('N/A', true) }}</td>
+                        <td>{{ alert.ambulance_eta_minutes|default('N/A', true) }}</td>
+                        <td>{{ alert.dispatch|default('Simulated') }}</td>
+                        <td>{{ alert.details|default('') }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="12">No events recorded yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    Smart Traffic Safety System | Academic Prototype
+</footer>
+
+<script>
+"use strict";
+
+const byId = id => document.getElementById(id);
+
+const tableStatus = byId("tableStatus");
+const eventRows = byId("eventRows");
+const startButton = byId("startDetection");
+const detectionStatus = byId("detectionStatus");
+const detectionOutput = byId("detectionOutput");
+
+let detectionBusy = false;
+
+function setStatus(element, message, isError = false) {
+    element.textContent = message;
+    element.classList.toggle("error", Boolean(isError));
+}
+
+function appendCell(row, value) {
+    const cell = document.createElement("td");
+    cell.textContent =
+        value === null || value === undefined ? "" : String(value);
+    row.appendChild(cell);
+}
+
+function renderEvents(events) {
+    eventRows.replaceChildren();
+
+    if (!events.length) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.colSpan = 12;
+        cell.textContent = "No events recorded yet.";
+        row.appendChild(cell);
+        eventRows.appendChild(row);
+        return;
+    }
+
+    for (const event of events) {
+        const row = document.createElement("tr");
+
+        const distance =
+            event.distance_km !== null &&
+            event.distance_km !== undefined
+                ? `${Number(event.distance_km).toFixed(2)} km`
+                : (event.distance || "N/A");
+
+        const values = [
+            event.time,
+            event.event_type,
+            event.status,
+            event.traffic_density,
+            event.vehicle_count,
+            event.signal_phase,
+            event.ambulance,
+            distance,
+            event.ambulance_traffic ?? "N/A",
+            event.ambulance_eta_minutes ?? "N/A",
+            event.dispatch,
+            event.details
+        ];
+
+        values.forEach(value => appendCell(row, value));
+        eventRows.appendChild(row);
+    }
+}
+
+async function readJson(response) {
+    const contentType = response.headers.get("content-type") || "";
+
+    if (!contentType.includes("application/json")) {
+        const body = await response.text();
+        throw new Error(
+            `Expected JSON, received HTTP ${response.status}. ` +
+            body.slice(0, 180)
+        );
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || `HTTP ${response.status}`);
+    }
+
+    return data;
+}
+
+async function refreshDashboard() {
+    try {
+        const response = await fetch("/api/dashboard-state", {
+            cache: "no-store",
+            headers: { "Accept": "application/json" }
+        });
+
+        const data = await readJson(response);
+
+        if (!data.state || !Array.isArray(data.events)) {
+            throw new Error(
+                "Dashboard API response is missing state or events."
+            );
+        }
+
+        const state = data.state;
+
+        byId("density").textContent = state.traffic_density ?? "UNKNOWN";
+        byId("signal").textContent = state.signal_phase ?? "UNKNOWN";
+        byId("greenTime").textContent = state.green_seconds ?? 0;
+        byId("ambulance").textContent =
+            state.ambulance_status ?? "UNKNOWN";
+        byId("incident").textContent =
+            state.incident_status ?? "No incident reported";
+        byId("eventCount").textContent =
+            data.total_alerts ?? data.events.length;
+
+        const vehicleResponse = await fetch("/api/vehicle-status", {
+            cache: "no-store"
+        });
+
+        if (vehicleResponse.ok) {
+            const vehicleData = await vehicleResponse.json();
+            byId("vehicles").textContent = vehicleData.vehicle_count ?? 0;
+            byId("density").textContent =
+                vehicleData.traffic_density ?? state.traffic_density ?? "UNKNOWN";
+        }
+
+        renderEvents(data.events);
+
+        const latestEvent = data.events[0];
+
+        byId("ambulanceEta").textContent =
+            latestEvent?.ambulance_eta_minutes != null
+                ? `${latestEvent.ambulance_eta_minutes} minutes`
+                : "N/A";
+
+        byId("ambulanceTraffic").textContent =
+            latestEvent?.ambulance_traffic ?? "N/A";
+
+        setStatus(
+            tableStatus,
+            `Dashboard connected. Loaded ${data.events.length} most recent event(s).`
+        );
+
+        if (Array.isArray(data.detection_output) && !detectionBusy) {
+            detectionOutput.textContent =
+                data.detection_output.join("\n") ||
+                "No detection output yet.";
+        }
+
+    } catch (error) {
+        console.error("Dashboard refresh failed:", error);
+        setStatus(
+            tableStatus,
+            `Dashboard update failed: ${error.message}`,
+            true
+        );
+    }
+}
+
+byId("simulateForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const button = byId("simulateButton");
+    button.disabled = true;
+
+    try {
+        const response = await fetch("/simulate-alert", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                details: byId("incidentDetails").value.trim()
+            })
+        });
+
+        const data = await readJson(response);
+
+        setStatus(tableStatus, data.message || "Test incident saved.");
+        await refreshDashboard();
+
+    } catch (error) {
+        setStatus(
+            tableStatus,
+            `Could not save test incident: ${error.message}`,
+            true
+        );
+    } finally {
+        button.disabled = false;
+    }
+});
+
+startButton.addEventListener("click", async () => {
+    if (detectionBusy) return;
+
+    detectionBusy = true;
+    startButton.disabled = true;
+
+    setStatus(detectionStatus, "Starting detection script...");
+
+    try {
+        const startResponse = await fetch("/start-detection", {
+            method: "POST",
+            headers: { "Accept": "application/json" }
+        });
+
+        const startData = await readJson(startResponse);
+        setStatus(
+            detectionStatus,
+            startData.message || "Detection started."
+        );
+
+        for (let attempt = 0; attempt < 240; attempt++) {
+            const response = await fetch("/detection-status", {
+                cache: "no-store"
+            });
+
+            const data = await readJson(response);
+
+            detectionOutput.textContent =
+                (data.output || []).join("\n") ||
+                "Waiting for detector output...";
+
+            detectionOutput.scrollTop = detectionOutput.scrollHeight;
+
+            if (!data.running) {
+                setStatus(
+                    detectionStatus,
+                    "Detection process finished. Check the logs."
+                );
+                break;
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            if (attempt === 239) {
+                setStatus(
+                    detectionStatus,
+                    "Still running. Polling paused after six minutes; check the logs."
+                );
+            }
+        }
+
+    } catch (error) {
+        setStatus(
+            detectionStatus,
+            `Detection error: ${error.message}`,
+            true
+        );
+    } finally {
+        detectionBusy = false;
+        startButton.disabled = false;
+        await refreshDashboard();
+    }
+});
+
+refreshDashboard();
+setInterval(refreshDashboard, 5000);
+</script>
+
+</body>
+</html>

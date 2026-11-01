@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 1
+names: ['ambulance']
+
+roboflow:
+  workspace: yolo-emergency-recognition
+  project: ambulance-detection-wdbvs
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/yolo-emergency-recognition/ambulance-detection-wdbvs/dataset/1
